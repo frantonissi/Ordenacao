@@ -1,46 +1,60 @@
-#include <stdlib.h>
 #include <stdio.h>
 
-int particiona(int *v, int inicio, int fim){
+// Função auxiliar apenas para trocar dois valores de lugar
+void troca(int v[], int i, int j) {
+    int temp = v[i];
+    v[i] = v[j];
+    v[j] = temp;
+}
 
-    int pivo = (v[inicio] + v[fim] + (v[inicio] + v[fim])/2)/3;
+// O "Operário": Organiza o vetor em torno do pivô
+int particiona(int v[], int inicio, int fim) {
+    int pivo = v[fim]; // Escolhe o último como pivô
+    int i = inicio - 1;
 
-    while(inicio < fim){
-        while(inicio < fim && v[inicio] <= pivo){
-            inicio++;
+    for (int j = inicio; j < fim; j++) {
+        if (v[j] <= pivo) {
+            i++;
+            troca(v, i, j);
         }
-        while(inicio < fim && v[fim] > pivo){
-            fim--;
-        }
-        int temp = v[inicio];
-        v[inicio] = v[fim];
-        v[fim] = temp; 
+    }
+    // Coloca o pivô na posição final correta
+    troca(v, i + 1, fim);
+    
+    // Retorna ONDE o pivô parou (esse índice não muda mais!)
+    return i + 1;
+}
+
+// O "Gerente": A função que você pediu
+void quickSort(int v[], int inicio, int fim) {
+    // 1. Base da Recursão: Se o vetor tem tamanho 0 ou 1, para.
+    if (inicio < fim) {
         
-    }
-    return inicio;
+        // 2. Chama o operário para organizar e descobrir onde está o muro (pivô)
+        int pivo_indice = particiona(v, inicio, fim);
 
+        // 3. Recursão para a Esquerda
+        // Atenção: Vai do inicio até "pivo_indice - 1"
+        // O pivô em si fica de fora, pois já está ordenado!
+        quickSort(v, inicio, pivo_indice - 1);
+
+        // 4. Recursão para a Direita
+        // Atenção: Começa em "pivo_indice + 1" até o fim
+        quickSort(v, pivo_indice + 1, fim);
+    }
 }
 
-void quickSort(int *v, int inicio, int fim){
-    if(inicio < fim){
-        int posicao = particiona(v, inicio, fim);
-        quickSort(v, inicio, posicao - 1);
-        quickSort(v, posicao, fim);
-    }
-}
+// Um main simples para testar
+int main() {
+    int v[] = {10, 7, 8, 9, 1, 5};
+    int n = 6; // tamanho do vetor
 
-void imprimir(int *v, int tam){
-    for(int i = 0; i <= tam; i++){
+    // Chamada inicial: do índice 0 até o último índice (n-1)
+    quickSort(v, 0, n - 1);
+
+    printf("Vetor ordenado: \n");
+    for (int i = 0; i < n; i++) {
         printf("%d ", v[i]);
     }
-    printf("\n");
-}
-
-int main(){
-    int vetor[]={72, 5, 18, 91, 33, 47, 2, 86, 14, 59, 23, 100, 8, 41, 67, 3, 29, 55, 11, 94};
-
-    quickSort(vetor, 0, 19);
-    imprimir(vetor, 19);
-    
     return 0;
 }
