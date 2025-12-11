@@ -3,7 +3,8 @@
 
 int particiona(int *v, int inicio, int fim){
 
-    int pivo = (v[inicio] + v[fim] + (v[inicio]+v[fim])/2)/3;
+    int pivo = (v[inicio] + v[fim] + (v[inicio] + v[fim])/2)/3;
+
     while(inicio < fim){
         while(inicio < fim && v[inicio] <= pivo){
             inicio++;
@@ -12,10 +13,12 @@ int particiona(int *v, int inicio, int fim){
             fim--;
         }
         int temp = v[inicio];
-         v[inicio] = v[fim];
-         v[fim] = temp;
+        v[inicio] = v[fim];
+        v[fim] = temp; 
+        
     }
     return inicio;
+
 }
 
 void quickSort(int *v, int inicio, int fim){
